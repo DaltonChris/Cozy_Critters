@@ -235,6 +235,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Zapplet-ing
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: b095bd031b88d2c4e9e8d8e131c7c514, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 4fa89ce8e21abc158aebf212d0363789, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -357,6 +361,7 @@ MonoBehaviour:
   critterName: Blip-Blip
   critterType: Zapplet
   letterDelay: 0.05
+  bobbleSpeed: 1
 --- !u!1001 &7312795439758909164
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -280,6 +280,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -4819223349682164798, guid: 2e1a7845528c4fb21b53aea0c56a73dd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3480375578310894775}
+    - targetCorrespondingSourceObject: {fileID: -4819223349682164798, guid: 2e1a7845528c4fb21b53aea0c56a73dd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8284823039743144307}
   m_SourcePrefab: {fileID: 100100000, guid: 2e1a7845528c4fb21b53aea0c56a73dd, type: 3}
 --- !u!4 &836780470778789912 stripped
 Transform:
@@ -377,8 +380,28 @@ MonoBehaviour:
   critterName: Dwippy
   critterType: Dropple
   letterDelay: 0.05
-  bobbleHeight: 0.001
   bobbleSpeed: 1
+--- !u!95 &8284823039743144307
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741325058589232869}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e0b4f679d2e60b97bbfe92a7e66720d0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &8529819567588361614
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -60,10 +60,15 @@ public class FruitPicker : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerNear = true;
+
             if (promptCanvas != null)
             {
                 promptCanvas.gameObject.SetActive(true);
-                promptText.text = "Press 'E' to pick fruit";
+
+                if (HasAnyFruitLeft())
+                    promptText.text = "Press 'E' to pick fruit";
+                else
+                    promptText.text = "There doesn't seem to be any more fruit";
             }
         }
     }
@@ -83,18 +88,31 @@ public class FruitPicker : MonoBehaviour
 
     private void PickFruit()
     {
-        // Find the first active fruit in the array
         for (int i = 0; i < fruits.Length; i++)
         {
             if (fruits[i].fruitObject != null && fruits[i].fruitObject.activeSelf)
             {
                 Debug.Log($"Picked 1 {fruits[i].type}");
                 fruits[i].fruitObject.SetActive(false); // Remove from scene
-                // TODO: Add to player inventory here
+
+                // After picking, update prompt if nothing left
+                if (!HasAnyFruitLeft())
+                    promptText.text = "There doesn't seem to be any more fruit";
+
                 return;
             }
         }
 
         Debug.Log("No fruit left to pick!");
+    }
+
+    private bool HasAnyFruitLeft()
+    {
+        foreach (var fruit in fruits)
+        {
+            if (fruit.fruitObject != null && fruit.fruitObject.activeSelf)
+                return true;
+        }
+        return false;
     }
 }
