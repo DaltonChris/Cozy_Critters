@@ -40,7 +40,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c01700fd266d6914ababb731e09af2eb, type: 3}
   m_Name: DepthOfField
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   mode:
     m_OverrideState: 1
     m_Value: 2
@@ -114,10 +114,10 @@ MonoBehaviour:
     m_Value: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.5
+    m_Value: 0.399
   response:
-    m_OverrideState: 0
-    m_Value: 0.37
+    m_OverrideState: 1
+    m_Value: 1
   texture:
     m_OverrideState: 0
     m_Value: {fileID: 2800000, guid: 68230a5a72b27b34da2c8bdf279cea66, type: 3}
@@ -176,10 +176,10 @@ MonoBehaviour:
   active: 1
   widthPixelation:
     m_OverrideState: 1
-    m_Value: 480
+    m_Value: 512
   heightPixelation:
     m_OverrideState: 1
-    m_Value: 480
+    m_Value: 512
   colorPrecision:
     m_OverrideState: 1
     m_Value: 32
@@ -195,15 +195,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ea62842ddb6960488930897ba9ce398, type: 3}
   m_Name: Dithering
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   patternIndex:
-    m_OverrideState: 1
-    m_Value: 2
+    m_OverrideState: 0
+    m_Value: 1
   ditherThreshold:
     m_OverrideState: 1
-    m_Value: 6
+    m_Value: 1
   ditherStrength:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 1
   ditherScale:
     m_OverrideState: 1
@@ -223,7 +223,7 @@ MonoBehaviour:
   active: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 0.055
+    m_Value: 0.2
 --- !u!114 &7216549377887335554
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -242,10 +242,10 @@ MonoBehaviour:
     m_Value: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 1.25
+    m_Value: 0.9
   intensity:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 1
   scatter:
     m_OverrideState: 1
     m_Value: 1
