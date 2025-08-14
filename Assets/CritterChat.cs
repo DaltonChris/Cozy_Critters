@@ -11,11 +11,17 @@ public class CritterChat : MonoBehaviour
     public string critterType = "Fuzzy";
     public float letterDelay = 0.05f;
 
+    [Header("Bobble Settings")]
+    private float bobbleHeight = 0.0085f;   // How high it moves up/down
+    public float bobbleSpeed = 1f;      // How fast it moves
+
     private bool isPlayerNear = false;
+    private Vector3 initialPosition;
 
     private void Start()
     {
-        chatCanvas.gameObject.SetActive(false);
+        chatCanvas.gameObject.SetActive(false); // Hide bubble initially
+        initialPosition = chatCanvas.transform.localPosition;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -35,6 +41,7 @@ public class CritterChat : MonoBehaviour
             isPlayerNear = false;
             StopAllCoroutines();
             chatCanvas.gameObject.SetActive(false);
+            chatCanvas.transform.localPosition = initialPosition; // Reset position
         }
     }
 
@@ -50,11 +57,15 @@ public class CritterChat : MonoBehaviour
 
     private void LateUpdate()
     {
-        // Make the bubble face the caera
         if (chatCanvas.gameObject.activeSelf && Camera.main != null)
         {
+            // Make face camera
             chatCanvas.transform.LookAt(Camera.main.transform);
-            chatCanvas.transform.Rotate(0, 180, 0); // Flip to face camera correctly
+            chatCanvas.transform.Rotate(0, 180, 0);
+
+            // bobbling effect
+            float bobbleOffset = Mathf.Sin(Time.time * bobbleSpeed) * bobbleHeight;
+            chatCanvas.transform.localPosition = initialPosition + new Vector3(0, 0, bobbleOffset);
         }
     }
 }

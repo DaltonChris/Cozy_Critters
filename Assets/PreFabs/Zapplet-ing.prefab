@@ -449,6 +449,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.x
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6302746974078997412, guid: 17a6776d1fba7831ba3ed102899716ec, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7857869262235183932, guid: 17a6776d1fba7831ba3ed102899716ec, type: 3}
       propertyPath: m_Name
       value: Canvas
