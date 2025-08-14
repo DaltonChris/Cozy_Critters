@@ -28,8 +28,7 @@ public class FruitPicker : MonoBehaviour
 
     private void Start()
     {
-        if (promptCanvas != null)
-        {
+        if (promptCanvas != null){
             promptCanvas.gameObject.SetActive(false);
             initialPromptPos = promptCanvas.transform.localPosition;
         }
@@ -38,8 +37,7 @@ public class FruitPicker : MonoBehaviour
 
     private void Update()
     {
-        if (isPlayerNear && Input.GetKeyDown(KeyCode.E))
-        {
+        if (isPlayerNear && Input.GetKeyDown(KeyCode.E)){
             PickFruit();
         }
 
@@ -88,12 +86,21 @@ public class FruitPicker : MonoBehaviour
 
     private void PickFruit()
     {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        PlayerInventory inventory = player != null ? player.GetComponent<PlayerInventory>() : null;
+
         for (int i = 0; i < fruits.Length; i++)
         {
             if (fruits[i].fruitObject != null && fruits[i].fruitObject.activeSelf)
             {
                 Debug.Log($"Picked 1 {fruits[i].type}");
                 fruits[i].fruitObject.SetActive(false); // Remove from scene
+
+                // Add to player inventory
+                if (inventory != null)
+                {
+                    inventory.AddFruit((PlayerInventory.FruitType)fruits[i].type, 1);
+                }
 
                 // After picking, update prompt if nothing left
                 if (!HasAnyFruitLeft())
@@ -105,6 +112,7 @@ public class FruitPicker : MonoBehaviour
 
         Debug.Log("No fruit left to pick!");
     }
+
 
     private bool HasAnyFruitLeft()
     {

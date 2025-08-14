@@ -71,7 +71,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fruits:
-  - type: 2
+  - type: 1
     fruitObject: {fileID: 5768232050926957957}
   - type: 1
     fruitObject: {fileID: 3977423852000072834}
