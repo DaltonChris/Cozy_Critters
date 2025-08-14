@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.29000536, g: 0.3387578, b: 0.46226418, a: 1}
-  m_SkyboxMaterial: {fileID: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: cce10a97f2a1f85409e9f578eb4d2b40, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -174,7 +174,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5424528, g: 0.987555, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -343,7 +343,7 @@ Transform:
   m_GameObject: {fileID: 90637308}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7050057, z: 0, w: 0.7092017}
-  m_LocalPosition: {x: 10.1, y: 13.4, z: -33.1}
+  m_LocalPosition: {x: 10.1, y: 32, z: -33.1}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -362,9 +362,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 854a4bff9de3e2d4ea88593d46cc2a82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 12
-  jumpForce: 7
+  walkSpeed: 5
+  runSpeed: 8
+  jumpForce: 15
   mouseSensitivity: 100
+  gravityMultiplier: 2
+  normalMass: 1
 --- !u!54 &90637316
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -373,7 +376,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 90637308}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 2
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -534,7 +537,7 @@ Camera:
   m_GameObject: {fileID: 189040356}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
+  m_ClearFlags: 1
   m_BackGroundColor: {r: 1, g: 0.7971698, b: 0.85008204, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -558,7 +561,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 1000
-  field of view: 55
+  field of view: 65
   orthographic: 0
   orthographic size: 15
   m_Depth: -1
@@ -584,13 +587,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 189040356}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30070576, y: 0, z: 0, w: 0.953717}
-  m_LocalPosition: {x: 0, y: 20, z: -15}
+  m_LocalRotation: {x: 0.17364816, y: 0, z: 0, w: 0.9848078}
+  m_LocalPosition: {x: 0, y: 15, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 90637314}
-  m_LocalEulerAnglesHint: {x: 35, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 20, y: 0, z: 0}
 --- !u!114 &189040360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,7 +621,7 @@ MonoBehaviour:
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
-  m_Dithering: 0
+  m_Dithering: 1
   m_ClearDepth: 1
   m_AllowXRRendering: 1
   m_AllowHDROutput: 1
@@ -2198,48 +2201,7 @@ PrefabInstance:
       value: terrain
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: -831627559638773483, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -4992749079746362370, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -3347169919594130525, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 8269625532321828827, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 7581610019702769307, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 5506612609425704574, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 462324452585627254, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -4072868151328964393, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 5962307925351430856, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -7718694022445488256, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 5289901500607292687, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -5693495226230185876, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 3399778182101431099, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -4122636583140129999, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 1856834816237027991, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -2929255309737021973, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -5017965311380715309, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 6697451006193613758, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -6390751677290712503, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -1066498874247690434, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -7348177324852994982, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 9025707637250660795, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 6124731760432294010, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -4863035676582545849, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 1184187863897785290, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 94429152630522004, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 5952002683785222360, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -1814879960396790340, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -3500402888265547701, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -1431830650014902323, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -2761358773820074435, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 4895901909388644846, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -3397031307795736022, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 8677763199587055962, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -4933758543629144478, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 1710771422776571784, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -7508119221238848963, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -3848901208668254181, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: 5442856280404122192, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -3573868714813319133, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
-    - {fileID: -8549543683270539912, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: eda88956aba3f68be89d7c515011a7f2, type: 3}
       insertIndex: 34
