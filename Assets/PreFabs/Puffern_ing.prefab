@@ -494,6 +494,7 @@ MonoBehaviour:
   critterType: Puffern
   letterDelay: 0.05
   bobbleSpeed: 1
+  chatSFX: {fileID: 8300000, guid: 93d5e7eb3f6a502b7b734ad9a3458bb1, type: 3}
 --- !u!95 &5835271322527798677
 Animator:
   serializedVersion: 5

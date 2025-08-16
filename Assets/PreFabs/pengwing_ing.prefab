@@ -490,6 +490,7 @@ MonoBehaviour:
   critterType: Pengweng
   letterDelay: 0.05
   bobbleSpeed: 1
+  chatSFX: {fileID: 8300000, guid: 51dd136aaa0bdc388885297fc319fb3d, type: 3}
 --- !u!95 &3473528628455208597
 Animator:
   serializedVersion: 5

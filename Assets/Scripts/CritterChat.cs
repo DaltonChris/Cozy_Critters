@@ -18,6 +18,8 @@ public class CritterChat : MonoBehaviour
     private bool isPlayerNear = false;
     private Vector3 initialPosition;
 
+    public AudioClip chatSFX;
+
     private void Start()
     {
         chatCanvas.gameObject.SetActive(false); // Hide bubble initially
@@ -31,6 +33,7 @@ public class CritterChat : MonoBehaviour
             isPlayerNear = true;
             chatCanvas.gameObject.SetActive(true);
             StartCoroutine(TypeText($"Hi! I'm {critterName}; I'm a {critterType} critter."));
+            SFXManager.Instance.PlaySFX(chatSFX); // SFX
         }
     }
 

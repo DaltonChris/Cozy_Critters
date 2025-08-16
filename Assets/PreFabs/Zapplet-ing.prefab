@@ -362,6 +362,7 @@ MonoBehaviour:
   critterType: Zapplet
   letterDelay: 0.05
   bobbleSpeed: 1
+  chatSFX: {fileID: 8300000, guid: 5a3be0dc49e83777b959bccdc6e5e2f3, type: 3}
 --- !u!1001 &7312795439758909164
 PrefabInstance:
   m_ObjectHideFlags: 0
