@@ -4,57 +4,84 @@ using UnityEngine;
 public class SimpleWanderAI : MonoBehaviour
 {
     public float moveSpeed = 4f;
-    public float turnSpeed = 90f; // Degrees per second
+    public float turnSpeed = 90f;
     public float changeDirectionTime = 5f;
     public float maxRadius = 10f;
-    public float fixedXRotation = -90f; // Lock X rotation
+    public float fixedXRotation = -90f;
 
     [Header("Jump Settings")]
     public float jumpForce = 20f;
     public float minJumpInterval = 5f;
     public float maxJumpInterval = 25f;
 
+    [Header("Follow Settings")]
+    public int fruitsToFollow = 3;
+    public float followDistance = 2f;
+    public Transform player;
+
     private Rigidbody rb;
     private Vector3 startPosition;
     private Vector3 targetDirection;
     private float wanderTimer;
+    private float jumpTimer;
+    private float nextJumpTime;
+    private int fruitsEaten = 0;
 
-    private float jumpTimer; // Counts time until next jump
-    private float nextJumpTime; // Randomly chosen jump interval
+    public Fruit targetFruit;
+
+    private bool isFollowingPlayer => fruitsEaten >= fruitsToFollow;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true; // handle all rotation manually
+        rb.freezeRotation = true;
 
         startPosition = transform.position;
         PickNewDirection();
 
-        // Setup first jump cycle
         SetNextJumpTime();
+
+        if (player == null)
+        {
+            GameObject p = GameObject.FindGameObjectWithTag("Player");
+            if (p != null) player = p.transform;
+        }
     }
 
     void Update()
     {
-        wanderTimer += Time.deltaTime;
-        if (wanderTimer >= changeDirectionTime || IsOutsideRadius())
+        if (!isFollowingPlayer && targetFruit != null)
         {
-            PickNewDirection();
+            Debug.Log($"{name}: Targeting fruit {targetFruit.name}");
+            Vector3 dir = (targetFruit.transform.position - transform.position).normalized;
+            targetDirection = new Vector3(dir.x, 0, dir.z);
+        }
+        else if (!isFollowingPlayer)
+        {
+            wanderTimer += Time.deltaTime;
+            if (wanderTimer >= changeDirectionTime || IsOutsideRadius())
+            {
+                //Debug.Log($"{name}: Picking new wander direction");
+                PickNewDirection();
+            }
+        }
+        else
+        {
+            if (player != null)
+            {
+                Debug.Log($"{name}: Following player");
+                Vector3 dir = (player.position - transform.position).normalized;
+                targetDirection = new Vector3(dir.x, 0, dir.z);
+            }
         }
 
-        // Rotate toward movement direction
         if (targetDirection != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
             targetRotation = Quaternion.Euler(fixedXRotation, targetRotation.eulerAngles.y, 0f);
-            transform.rotation = Quaternion.RotateTowards(
-                transform.rotation,
-                targetRotation,
-                turnSpeed * Time.deltaTime
-            );
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
         }
 
-        // Jump timer
         jumpTimer += Time.deltaTime;
         if (jumpTimer >= nextJumpTime)
         {
@@ -65,16 +92,52 @@ public class SimpleWanderAI : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Move forward — handle tilted models
-        Vector3 forwardMove = (fixedXRotation == -90f ? -transform.up : transform.forward) * moveSpeed;
-        rb.velocity = new Vector3(forwardMove.x, rb.velocity.y, forwardMove.z);
+        if (targetFruit != null)
+        {
+            float dist = Vector3.Distance(transform.position, targetFruit.transform.position);
+            Debug.Log($"{name}: Distance to {targetFruit.name} = {dist}");
 
-        // Enforce X rotation lock
-        transform.rotation = Quaternion.Euler(
-            fixedXRotation,
-            transform.rotation.eulerAngles.y,
-            0f
-        );
+            if (dist > 1f) // move closer
+            {
+                Vector3 dir = (targetFruit.transform.position - transform.position).normalized;
+                Vector3 move = new Vector3(dir.x, 0, dir.z) * moveSpeed;
+                rb.velocity = new Vector3(move.x, rb.velocity.y, move.z);
+                Debug.Log($"{name}: Moving toward {targetFruit.name}");
+            }
+            else
+            {
+                Debug.Log($"{name}: Eating {targetFruit.name}");
+                targetFruit.Eat(this);
+                targetFruit = null;
+            }
+        }
+
+        else if (isFollowingPlayer && player != null)
+        {
+            float distance = Vector3.Distance(transform.position, player.position);
+            //Debug.Log($"{name}: Distance to player = {distance}");
+
+            if (distance > followDistance)
+            {
+                Vector3 dir = (player.position - transform.position).normalized;
+                Vector3 move = new Vector3(dir.x, 0, dir.z) * moveSpeed;
+                rb.velocity = new Vector3(move.x, rb.velocity.y, move.z);
+                //Debug.Log($"{name}: Moving toward player");
+            }
+            else
+            {
+                rb.velocity = new Vector3(0, rb.velocity.y, 0); // stop when close
+                //Debug.Log($"{name}: Close enough to player, stopping");
+            }
+        }
+        else
+        {
+            Vector3 forwardMove = (fixedXRotation == -90f ? -transform.up : transform.forward) * moveSpeed;
+            rb.velocity = new Vector3(forwardMove.x, rb.velocity.y, forwardMove.z);
+            //Debug.Log($"{name}: Wandering");
+        }
+
+        transform.rotation = Quaternion.Euler(fixedXRotation, transform.rotation.eulerAngles.y, 0f);
     }
 
     void PickNewDirection()
@@ -83,6 +146,7 @@ public class SimpleWanderAI : MonoBehaviour
 
         if (IsOutsideRadius())
         {
+            //Debug.Log($"{name}: Outside radius, going back to start");
             targetDirection = (startPosition - transform.position).normalized;
         }
         else
@@ -92,10 +156,7 @@ public class SimpleWanderAI : MonoBehaviour
         }
     }
 
-    bool IsOutsideRadius()
-    {
-        return Vector3.Distance(transform.position, startPosition) > maxRadius;
-    }
+    bool IsOutsideRadius() => Vector3.Distance(transform.position, startPosition) > maxRadius;
 
     void SetNextJumpTime()
     {
@@ -105,14 +166,32 @@ public class SimpleWanderAI : MonoBehaviour
 
     void DoJump()
     {
-         // For -90 rotation, jump along -transform.forward, else jump along world up
+        Debug.Log($"{name}: Jumping!");
         Vector3 jumpDir = (fixedXRotation == -90f ? -transform.forward : Vector3.up);
         rb.AddForce(jumpDir * jumpForce, ForceMode.Impulse);
     }
 
-    bool IsGrounded()
+    public void EatFruit()
     {
-        // Simple raycast ground check
-        return Physics.Raycast(transform.position, Vector3.down, 1.1f);
+        fruitsEaten++;
+        Debug.Log($"{name}: Ate a fruit! Total eaten = {fruitsEaten}");
+    }
+
+    public void SetTargetFruit(Fruit fruit)
+    {
+        if (targetFruit == null)
+        {
+            Debug.Log($"{name}: Target fruit set to {fruit.name}");
+            targetFruit = fruit;
+        }
+    }
+
+    public void ClearTargetFruit(Fruit fruit)
+    {
+        if (targetFruit == fruit)
+        {
+            Debug.Log($"{name}: Lost fruit {fruit.name}");
+            targetFruit = null;
+        }
     }
 }

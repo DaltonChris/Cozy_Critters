@@ -18,6 +18,7 @@ public class RigidbodyPlayerController : MonoBehaviour
 
     [Header("Dance Settings")]
     public AudioClip[] danceSFX; // Array of possible dance sounds
+    public float danceRadius = 35f; // how far critters will react
 
     void Start()
     {
@@ -54,6 +55,9 @@ public class RigidbodyPlayerController : MonoBehaviour
                 int index = Random.Range(0, danceSFX.Length);
                 SFXManager.Instance.PlaySFX(danceSFX[index]);
             }
+
+            // Make nearby critters dance too
+            TriggerNearbyCrittersDance();
         }
     }
 
@@ -113,5 +117,28 @@ public class RigidbodyPlayerController : MonoBehaviour
     void Jump()
     {
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+    }
+
+    void TriggerNearbyCrittersDance()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, danceRadius);
+        foreach (Collider hit in hits)
+        {
+            if (hit.CompareTag("Critter")) // Make sure critters are tagged properly
+            {
+                Animator critterAnim = hit.transform.parent.GetComponent<Animator>();
+                if (critterAnim != null)
+                {
+                    critterAnim.SetTrigger("Dance");
+                }
+            }
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        // visualize the dance radius in scene view
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, danceRadius);
     }
 }
