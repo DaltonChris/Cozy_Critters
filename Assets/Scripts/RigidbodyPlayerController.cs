@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class RigidbodyPlayerController : MonoBehaviour
@@ -9,12 +8,12 @@ public class RigidbodyPlayerController : MonoBehaviour
     public float jumpForce = 5f;
     public float mouseSensitivity = 100f;
 
-    public float gravityMultiplier = 2f; // Extra gravity when falling
-    public float normalMass = 1f;      // default mass
+    public float gravityMultiplier = 2f;
+    public float normalMass = 1f;
 
     private Rigidbody rb;
-    private float rotationY = 0f; // for mouse rotation around Y axis
-
+    public Animator anim;
+    private float rotationY = 0f;
     private bool isGrounded;
 
     void Start()
@@ -25,7 +24,7 @@ public class RigidbodyPlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        rb.mass = normalMass; // ensure default mass at start
+        rb.mass = normalMass;
     }
 
     void Update()
@@ -34,38 +33,54 @@ public class RigidbodyPlayerController : MonoBehaviour
         rotationY += mouseX;
         transform.rotation = Quaternion.Euler(0f, rotationY, 0f);
 
+        // Jump Trigger
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             Jump();
+            anim.SetTrigger("Jump"); // Trigger jump animation
+        }
+
+        // Dance Trigger (only fires when pressed, not held)
+        if (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.RightAlt))
+        {
+            anim.SetTrigger("Dance");
         }
     }
 
-
     void FixedUpdate()
     {
-        // WASD movement
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
 
-        // Check run or walk
-        float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+        bool isRunning = Input.GetKey(KeyCode.LeftShift);
+        float currentSpeed = isRunning ? runSpeed : walkSpeed;
 
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
         move = move.normalized * currentSpeed;
 
-        // Apply extra gravity if falling
         if (!isGrounded)
         {
             rb.AddForce(Vector3.down * Physics.gravity.magnitude * (gravityMultiplier - 1f), ForceMode.Acceleration);
-
         }
 
-        // Preserve vertical velocity
         Vector3 velocity = rb.velocity;
         velocity.x = move.x;
         velocity.z = move.z;
-
         rb.velocity = velocity;
+
+        // Animator speed control
+        // Animator speed control
+        if (isRunning)
+        {
+            anim.SetFloat("Speed", 2f); // Force speed to 2 when running
+        }
+        else
+        {
+            anim.SetFloat("Speed", new Vector2(moveX, moveZ).magnitude); // normal speed
+        }
+
+        anim.SetBool("IsRunning", isRunning);
+
     }
 
     private void OnCollisionStay(Collision collision)
@@ -75,7 +90,7 @@ public class RigidbodyPlayerController : MonoBehaviour
             if (contact.normal.y > 0.5f)
             {
                 isGrounded = true;
-                rb.mass = normalMass; // restore normal mass when grounded
+                rb.mass = normalMass;
                 return;
             }
         }
@@ -89,8 +104,6 @@ public class RigidbodyPlayerController : MonoBehaviour
 
     void Jump()
     {
-        //rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z); // Reset Y velocity
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
-
 }
