@@ -16,6 +16,9 @@ public class RigidbodyPlayerController : MonoBehaviour
     private float rotationY = 0f;
     private bool isGrounded;
 
+    [Header("Dance Settings")]
+    public AudioClip[] danceSFX; // Array of possible dance sounds
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -44,6 +47,13 @@ public class RigidbodyPlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.RightAlt))
         {
             anim.SetTrigger("Dance");
+
+            // Play random dance SFX if available
+            if (danceSFX != null && danceSFX.Length > 0)
+            {
+                int index = Random.Range(0, danceSFX.Length);
+                SFXManager.Instance.PlaySFX(danceSFX[index]);
+            }
         }
     }
 
@@ -69,7 +79,6 @@ public class RigidbodyPlayerController : MonoBehaviour
         rb.velocity = velocity;
 
         // Animator speed control
-        // Animator speed control
         if (isRunning)
         {
             anim.SetFloat("Speed", 2f); // Force speed to 2 when running
@@ -80,7 +89,6 @@ public class RigidbodyPlayerController : MonoBehaviour
         }
 
         anim.SetBool("IsRunning", isRunning);
-
     }
 
     private void OnCollisionStay(Collision collision)
