@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 6518925713636817314}
   - component: {fileID: 7706522041110338949}
   - component: {fileID: 4120961493978516409}
+  - component: {fileID: 3584753623811913999}
   m_Layer: 0
   m_Name: body
   m_TagString: Critter
@@ -130,8 +131,8 @@ Transform:
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 309313615220675449}
   - {fileID: 8155995993796956086}
+  - {fileID: 309313615220675449}
   - {fileID: 1953765756820224483}
   - {fileID: 2551313915645855398}
   - {fileID: 1322823842534976980}
@@ -312,6 +313,27 @@ MonoBehaviour:
   letterDelay: 0.05
   bobbleSpeed: 1
   chatSFX: {fileID: 8300000, guid: 51dd136aaa0bdc388885297fc319fb3d, type: 3}
+--- !u!95 &3584753623811913999
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 570740476728632075}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1dbf9ea6acdaba628b9ec870034ba454, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &586707932107122782
 GameObject:
   m_ObjectHideFlags: 0
@@ -1161,9 +1183,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3886606519807579843}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.6997725, y: 0.016648002, z: 0.07453508, w: 0.7102717}
-  m_LocalPosition: {x: -0.00011082331, y: 0.00047046272, z: 0.0039028334}
-  m_LocalScale: {x: 0.01, y: 0.010000001, z: 0.01}
+  m_LocalRotation: {x: 0.6997725, y: 0.016647998, z: 0.07453508, w: 0.7102717}
+  m_LocalPosition: {x: -0.00011082968, y: 0.00047047882, z: 0.0039028348}
+  m_LocalScale: {x: 0.01, y: 0.009999998, z: 0.009999996}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1833361407449626314}
@@ -1180,7 +1202,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4431464966117699362}
-  - component: {fileID: 2720584271123439907}
   m_Layer: 0
   m_Name: Locking Hip Hop Dance
   m_TagString: Critter
@@ -1204,27 +1225,6 @@ Transform:
   - {fileID: 1467355429627194870}
   m_Father: {fileID: 3040160652058912922}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &2720584271123439907
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3905862521889289624}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1dbf9ea6acdaba628b9ec870034ba454, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4101128819395299983
 GameObject:
   m_ObjectHideFlags: 0

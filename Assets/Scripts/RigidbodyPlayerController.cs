@@ -126,11 +126,25 @@ public class RigidbodyPlayerController : MonoBehaviour
         {
             if (hit.CompareTag("Critter")) // Make sure critters are tagged properly
             {
-                Animator critterAnim = hit.transform.parent.GetComponent<Animator>();
-                if (critterAnim != null)
+                if(hit != null)
                 {
-                    critterAnim.SetTrigger("Dance");
+                    Animator critterAnim = hit.GetComponent<Animator>();
+                    if(critterAnim != null)
+                    {
+                        critterAnim.enabled = true;
+                        critterAnim.SetTrigger("Dance");
+                        Debug.Log("Trigger set on parent Animator!");
+                    }
+                    else
+                    {
+                        Debug.Log("No Animator found on parent!");
+                    }
                 }
+                else
+                {
+                    Debug.Log("Hit object has no parent!");
+                }
+
             }
         }
     }
