@@ -923,6 +923,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cac893e1d8186b0e29305cd0bfe9be32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pickSFX: {fileID: 8300000, guid: cdd94f6243262fe77a9ab0faa08deb8c, type: 3}
   fruits:
   - type: 0
     fruitObject: {fileID: 262949198264918744}

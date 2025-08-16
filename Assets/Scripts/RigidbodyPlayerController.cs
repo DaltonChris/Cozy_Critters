@@ -8,7 +8,7 @@ public class RigidbodyPlayerController : MonoBehaviour
     public float jumpForce = 5f;
     public float mouseSensitivity = 100f;
 
-    public float gravityMultiplier = 2f;
+    public float gravityMultiplier = 3f;
     public float normalMass = 1f;
 
     private Rigidbody rb;

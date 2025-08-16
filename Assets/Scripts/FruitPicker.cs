@@ -12,7 +12,7 @@ public class FruitPicker : MonoBehaviour
         public FruitType type;
         public GameObject fruitObject;
     }
-
+    public AudioClip pickSFX;
     [Header("Fruit Settings")]
     public Fruit[] fruits;
 
@@ -25,6 +25,8 @@ public class FruitPicker : MonoBehaviour
     private bool isPlayerNear = false;
     private Vector3 initialPromptPos;
     private Camera playerCamera;
+
+
 
     private void Start()
     {
@@ -95,7 +97,7 @@ public class FruitPicker : MonoBehaviour
             {
                 Debug.Log($"Picked 1 {fruits[i].type}");
                 fruits[i].fruitObject.SetActive(false); // Remove from scene
-
+                SFXManager.Instance.PlaySFX(pickSFX); // SFX
                 // Add to player inventory
                 if (inventory != null)
                 {
