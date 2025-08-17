@@ -3,6 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class RigidbodyPlayerController : MonoBehaviour
 {
+    public CabinPostFXController cabinPostFXController;
     public float walkSpeed = 5f;
     public float runSpeed = 8f;
     public float jumpForce = 5f;
@@ -120,7 +121,7 @@ public class RigidbodyPlayerController : MonoBehaviour
         isDancing = true;
 
         anim.SetTrigger("Dance");
-
+        cabinPostFXController.TriggerRainbowGamma();
         // Play random dance SFX if available
         if (danceSFX != null && danceSFX.Length > 0)
         {
