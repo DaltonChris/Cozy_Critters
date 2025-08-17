@@ -1,9 +1,8 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using PSX; // VolumeComponents from PSX shader
+using PSX;
 using System.Collections;
-
 
 public class CabinPostFXController : MonoBehaviour
 {
@@ -11,19 +10,19 @@ public class CabinPostFXController : MonoBehaviour
     public Transform player;
     public Transform cabin;
     public Volume volume;
-    public AudioSource ambientAudio; // NEW: audio reference
+    public AudioSource ambientAudio;
 
     [Header("Distance Settings")]
-    public float minDistance = 5f;   // near the cabin
-    public float maxDistance = 50f;  // far away
+    public float minDistance = 5f;
+    public float maxDistance = 50f;
 
     [Header("Pixelation Ranges")]
-    public float minPixelSize = 128f; // high res (near)
-    public float maxPixelSize = 512f; // low res (far)
+    public float minPixelSize = 128f;
+    public float maxPixelSize = 512f;
 
     [Header("Threshold Ranges")]
-    public int maxThreshold = 10;   // smoother near
-    public int minThreshold = 1;    // more dither far
+    public int maxThreshold = 10;
+    public int minThreshold = 1;
 
     [Header("Smoothing")]
     public float smoothSpeed = 5f;
@@ -35,25 +34,29 @@ public class CabinPostFXController : MonoBehaviour
     private ChromaticAberration chromatic;
     private ColorAdjustments colorAdjustments;
 
+    // Current values applied to postFX
     private float currentPixelSize;
     private int currentThreshold;
     private float currentVignette;
     private float currentBloomIntensity;
     private Color currentBloomColor;
+    private float currentAudioVolume;
 
     private Color bloomStartColor;
     private float bloomStartIntensity;
 
-    // NEW: ambient audio smoothing
-    private float currentAudioVolume;
-
-    // NEW: chromatic aberration breathing
+    // Chromatic breathing
     private float chromaticTimer = 0f;
     private bool triggerFastPulse = false;
-    private float fastPulseTime = 5f; // 5 seconds
+    private float fastPulseTime = 5f;
     private float fastPulseElapsed = 0f;
 
+    // Rainbow/dance overrides
     private bool isDanceCoroutineActive = false;
+    private float overridePixelSize = -1f;
+    private int overrideThreshold = -1;
+    private float overrideVignette = -1f;
+    private Color? overrideColor = null;
 
     void Start()
     {
@@ -66,13 +69,13 @@ public class CabinPostFXController : MonoBehaviour
             volume.profile.TryGet(out chromatic);
             volume.profile.TryGet(out colorAdjustments);
         }
+        volume.profile.TryGet(out colorAdjustments);
+        if(colorAdjustments == null)
+            Debug.LogError("Color Adjustments not found in Volume profile!");
 
-        if (pixelation != null)
-            currentPixelSize = pixelation.widthPixelation.value;
-        if (dithering != null)
-            currentThreshold = Mathf.RoundToInt(dithering.ditherThreshold.value);
-        if (vignette != null)
-            currentVignette = vignette.intensity.value;
+        if (pixelation != null) currentPixelSize = pixelation.widthPixelation.value;
+        if (dithering != null) currentThreshold = Mathf.RoundToInt(dithering.ditherThreshold.value);
+        if (vignette != null) currentVignette = vignette.intensity.value;
         if (bloom != null)
         {
             currentBloomIntensity = bloom.intensity.value;
@@ -80,119 +83,137 @@ public class CabinPostFXController : MonoBehaviour
             bloomStartColor = bloom.tint.value;
             currentBloomColor = bloom.tint.value;
         }
-
-        if (ambientAudio != null)
-            currentAudioVolume = ambientAudio.volume;
-    }
-
-    /// <summary>
-    /// Public method to start the rainbow gamma coroutine
-    /// </summary>
-    public void TriggerRainbowGamma()
-    {
-        StartCoroutine(RainbowGammaCoroutine());
+        if (ambientAudio != null) currentAudioVolume = ambientAudio.volume;
     }
 
     void Update()
     {
         if (player == null || cabin == null) return;
-        if (isDanceCoroutineActive) return;
-        float dist = Vector3.Distance(player.position, cabin.position);
 
-        // t = 0 near, 1 far
+        // Distance updates only when not dancing
+        if (!isDanceCoroutineActive)
+        {
+            UpdateDistanceBasedValues();
+        }
+
+        ApplyValues();
+        UpdateChromaticAberration();
+    }
+
+    private void UpdateDistanceBasedValues()
+    {
+        float dist = Vector3.Distance(player.position, cabin.position);
         float t = Mathf.InverseLerp(minDistance, maxDistance, dist);
 
-        // target values
         float targetPixelSize = Mathf.Lerp(maxPixelSize, minPixelSize, t);
         int targetThreshold = Mathf.RoundToInt(Mathf.Lerp(maxThreshold, minThreshold, t));
         float targetVignette = Mathf.Lerp(0.25f, 1f, t);
         float targetBloomIntensity = Mathf.Lerp(5f, bloomStartIntensity, t);
         Color targetBloomColor = Color.Lerp(bloomStartColor, Color.red, t);
-        float targetAudioVolume = Mathf.Lerp(0f, 1f, t); // 0 near → 1 far
+        float targetAudioVolume = Mathf.Lerp(0f, 1f, t);
 
-        // smooth
         currentPixelSize = Mathf.Lerp(currentPixelSize, targetPixelSize, Time.deltaTime * smoothSpeed);
         currentThreshold = Mathf.RoundToInt(Mathf.Lerp(currentThreshold, targetThreshold, Time.deltaTime * smoothSpeed));
         currentVignette = Mathf.Lerp(currentVignette, targetVignette, Time.deltaTime * smoothSpeed);
         currentBloomIntensity = Mathf.Lerp(currentBloomIntensity, targetBloomIntensity, Time.deltaTime * smoothSpeed);
         currentBloomColor = Color.Lerp(currentBloomColor, targetBloomColor, Time.deltaTime * smoothSpeed);
         currentAudioVolume = Mathf.Lerp(currentAudioVolume, targetAudioVolume, Time.deltaTime * smoothSpeed);
+    }
 
-        // apply
+    private void ApplyValues()
+    {
+        // PIXELATION
         if (pixelation != null)
         {
-            pixelation.widthPixelation.value = currentPixelSize;
-            pixelation.heightPixelation.value = currentPixelSize;
+            pixelation.widthPixelation.overrideState = true;
+            pixelation.heightPixelation.overrideState = true;
+            pixelation.widthPixelation.value = pixelation.heightPixelation.value =
+            overridePixelSize > 0 ? overridePixelSize : currentPixelSize;
         }
 
+        // DITHERING
         if (dithering != null)
         {
-            dithering.ditherThreshold.value = currentThreshold;
+            dithering.ditherThreshold.overrideState = true;
+            dithering.ditherThreshold.value = overrideThreshold >= 0 ? overrideThreshold : currentThreshold;
         }
 
+        // VIGNETTE
         if (vignette != null)
         {
-            vignette.intensity.value = currentVignette;
+            vignette.intensity.overrideState = true;
+            vignette.intensity.value = overrideVignette >= 0f ? overrideVignette : currentVignette;
         }
 
+        // BLOOM
         if (bloom != null)
         {
+            bloom.intensity.overrideState = true;
+            bloom.tint.overrideState = true;
             bloom.intensity.value = currentBloomIntensity;
             bloom.tint.value = currentBloomColor;
         }
 
+        // AUDIO
         if (ambientAudio != null)
         {
             ambientAudio.volume = currentAudioVolume;
         }
 
-        // chromatic aberration breathin
-        if (chromatic != null)
+        // COLOR ADJUSTMENTS
+        if (colorAdjustments != null)
         {
-            float pulseSpeed = 1f;
-            if (dist < 100f)
-            {
-                triggerFastPulse = true;
-            }
+            colorAdjustments.colorFilter.overrideState = true;
+            colorAdjustments.colorFilter.value = overrideColor ?? Color.white;
+        }
+    }
 
-            if (triggerFastPulse)
-            {
-                pulseSpeed = 2f; // 2x speed
-                fastPulseElapsed += Time.deltaTime;
-                if (fastPulseElapsed >= fastPulseTime)
-                {
-                    triggerFastPulse = false;
-                    fastPulseElapsed = 0f;
-                    chromatic.intensity.value = 0f; // stop
-                }
-            }
+    private void UpdateChromaticAberration()
+    {
+        if (chromatic == null) return;
 
-            if (!triggerFastPulse)
+        float dist = Vector3.Distance(player.position, cabin.position);
+        float pulseSpeed = 1f;
+
+        if (dist < 100f) triggerFastPulse = true;
+
+        if (triggerFastPulse)
+        {
+            pulseSpeed = 2f;
+            fastPulseElapsed += Time.deltaTime;
+            if (fastPulseElapsed >= fastPulseTime)
             {
-                // reset timer for normal breathing
-                chromaticTimer += Time.deltaTime * pulseSpeed;
-                chromatic.intensity.value = Mathf.Lerp(0.25f, 1f, (Mathf.Sin(chromaticTimer) + 1f) / 2f);
-            }
-            else
-            {
-                chromaticTimer += Time.deltaTime * pulseSpeed;
-                chromatic.intensity.value = Mathf.Lerp(0.25f, 1f, (Mathf.Sin(chromaticTimer) + 1f) / 2f);
+                triggerFastPulse = false;
+                fastPulseElapsed = 0f;
+                chromatic.intensity.value = 0f;
             }
         }
 
+        chromaticTimer += Time.deltaTime * pulseSpeed;
+        chromatic.intensity.value = Mathf.Lerp(0.25f, 1f, (Mathf.Sin(chromaticTimer) + 1f) / 2f);
+    }
+
+    public void TriggerRainbowGamma()
+    {
+        if (!isDanceCoroutineActive)
+        {
+            StartCoroutine(RainbowGammaCoroutine());
+        }
     }
 
     private IEnumerator RainbowGammaCoroutine()
     {
         if (colorAdjustments == null) yield break;
+
+        Debug.Log("Rainbow coroutine started");
         isDanceCoroutineActive = true;
 
-        // Save original distance-based values
+        // Save original values
         float originalPixelSize = currentPixelSize;
         int originalThreshold = currentThreshold;
-        float originalVignetteValue = currentVignette;
-
+        float originalVignette = currentVignette;
         Color originalColor = colorAdjustments.colorFilter.value;
+
         float duration = 6f;
         float elapsed = 0f;
 
@@ -201,65 +222,48 @@ public class CabinPostFXController : MonoBehaviour
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
 
-            // Rainbow cycle using HSV
+            // Rainbow hue
             float hue = Mathf.Repeat(t * 6f, 1f);
-            colorAdjustments.colorFilter.value = Color.HSVToRGB(hue, 1f, 1f);
+            overrideColor = Color.HSVToRGB(hue, 1f, 1f);
 
-            // Override pixelation
-            if (pixelation != null)
-            {
-                pixelation.widthPixelation.value = 360f;
-                pixelation.heightPixelation.value = 360f;
-                currentPixelSize = 360f; // store override so Update doesn't mess
-            }
+            // Make pixelation visible
+            overridePixelSize = 360f;
+            overrideThreshold = maxThreshold;
+            overrideVignette = 0.3f;
 
-            // Override dithering and vignette as if player is very close
-            if (dithering != null) dithering.ditherThreshold.value = maxThreshold;
-            if (vignette != null)
-            {
-                vignette.intensity.value = 0.25f;
-                currentVignette = 0.25f; // store override
-            }
-
+            ApplyValues();
             yield return null;
         }
 
-        // Lerp back to distance-based values
-        float lerpBackDuration = 1f;
+        // Smooth lerp back
+        float lerpDuration = 1f;
         float lerpElapsed = 0f;
-        Color currentColor = colorAdjustments.colorFilter.value;
+        float startPixel = overridePixelSize;
+        int startThreshold = overrideThreshold;
+        float startVignette = overrideVignette;
+        Color startColor = overrideColor.Value;
 
-        while (lerpElapsed < lerpBackDuration)
+        while (lerpElapsed < lerpDuration)
         {
             lerpElapsed += Time.deltaTime;
-            float lerpT = lerpElapsed / lerpBackDuration;
+            float lerpT = lerpElapsed / lerpDuration;
 
-            // Lerp color
-            colorAdjustments.colorFilter.value = Color.Lerp(currentColor, originalColor, lerpT);
+            overridePixelSize = Mathf.Lerp(startPixel, originalPixelSize, lerpT);
+            overrideThreshold = Mathf.RoundToInt(Mathf.Lerp(startThreshold, originalThreshold, lerpT));
+            overrideVignette = Mathf.Lerp(startVignette, originalVignette, lerpT);
+            overrideColor = Color.Lerp(startColor, originalColor, lerpT);
 
-            // Lerp pixelation & vignette
-            if (pixelation != null)
-                currentPixelSize = Mathf.Lerp(360f, originalPixelSize, lerpT);
-            if (pixelation != null)
-                pixelation.widthPixelation.value = currentPixelSize;
-            if (pixelation != null)
-                pixelation.heightPixelation.value = currentPixelSize;
-
-            if (vignette != null)
-            {
-                currentVignette = Mathf.Lerp(0.25f, originalVignetteValue, lerpT);
-                vignette.intensity.value = currentVignette;
-            }
-
-            if (dithering != null)
-                dithering.ditherThreshold.value = Mathf.RoundToInt(Mathf.Lerp(maxThreshold, currentThreshold, lerpT));
-
+            ApplyValues();
             yield return null;
         }
 
+        overridePixelSize = -1f;
+        overrideThreshold = -1;
+        overrideVignette = -1f;
+        overrideColor = null;
+
         isDanceCoroutineActive = false;
+        Debug.Log("Rainbow coroutine finished");
     }
-
-
 
 }

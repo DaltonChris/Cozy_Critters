@@ -561,8 +561,8 @@ MonoBehaviour:
   cabin: {fileID: 3338708864991445779}
   volume: {fileID: 544567686}
   ambientAudio: {fileID: 1525168405}
-  minDistance: 75
-  maxDistance: 500
+  minDistance: 100
+  maxDistance: 600
   minPixelSize: 64
   maxPixelSize: 512
   maxThreshold: 10
@@ -8589,6 +8589,10 @@ PrefabInstance:
       propertyPath: danceSFX.Array.size
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 630929278223466636, guid: 61c6ef46a712d6d0c8bbc81e6547761b, type: 3}
+      propertyPath: cabinPostFXController
+      value: 
+      objectReference: {fileID: 138157477}
     - target: {fileID: 630929278223466636, guid: 61c6ef46a712d6d0c8bbc81e6547761b, type: 3}
       propertyPath: danceSFX.Array.data[0]
       value: 

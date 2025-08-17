@@ -38,6 +38,12 @@ public class RigidbodyPlayerController : MonoBehaviour
     {
         if (isDancing) return; // block input while dancing
 
+        float moveX = Input.GetAxis("Horizontal");
+        float moveZ = Input.GetAxis("Vertical");
+
+        // Block dance if player is moving
+        bool isMoving = Mathf.Abs(moveX) > 0.01f || Mathf.Abs(moveZ) > 0.01f;
+
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         rotationY += mouseX;
         transform.rotation = Quaternion.Euler(0f, rotationY, 0f);
@@ -49,12 +55,13 @@ public class RigidbodyPlayerController : MonoBehaviour
             anim.SetTrigger("Jump"); // Trigger jump animation
         }
 
-        // Dance Trigger (press F, only if not already dancing)
-        if (Input.GetKeyDown(KeyCode.F))
+        // Dance Trigger (press F, only if not moving and not already dancing)
+        if (Input.GetKeyDown(KeyCode.F) && !isMoving)
         {
             StartCoroutine(DanceRoutine());
         }
     }
+
 
     void FixedUpdate()
     {
