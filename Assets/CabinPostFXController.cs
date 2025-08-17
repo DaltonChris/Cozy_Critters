@@ -32,7 +32,6 @@ public class CabinPostFXController : MonoBehaviour
     private Vignette vignette;
     private Bloom bloom;
     private ChromaticAberration chromatic;
-    private ColorAdjustments colorAdjustments;
 
     // Current values applied to postFX
     private float currentPixelSize;
@@ -56,7 +55,6 @@ public class CabinPostFXController : MonoBehaviour
     private float overridePixelSize = -1f;
     private int overrideThreshold = -1;
     private float overrideVignette = -1f;
-    private Color? overrideColor = null;
 
     void Start()
     {
@@ -67,11 +65,7 @@ public class CabinPostFXController : MonoBehaviour
             volume.profile.TryGet(out vignette);
             volume.profile.TryGet(out bloom);
             volume.profile.TryGet(out chromatic);
-            volume.profile.TryGet(out colorAdjustments);
         }
-        volume.profile.TryGet(out colorAdjustments);
-        if(colorAdjustments == null)
-            Debug.LogError("Color Adjustments not found in Volume profile!");
 
         if (pixelation != null) currentPixelSize = pixelation.widthPixelation.value;
         if (dithering != null) currentThreshold = Mathf.RoundToInt(dithering.ditherThreshold.value);
@@ -90,7 +84,6 @@ public class CabinPostFXController : MonoBehaviour
     {
         if (player == null || cabin == null) return;
 
-        // Distance updates only when not dancing
         if (!isDanceCoroutineActive)
         {
             UpdateDistanceBasedValues();
@@ -122,7 +115,6 @@ public class CabinPostFXController : MonoBehaviour
 
     private void ApplyValues()
     {
-        // PIXELATION
         if (pixelation != null)
         {
             pixelation.widthPixelation.overrideState = true;
@@ -131,21 +123,18 @@ public class CabinPostFXController : MonoBehaviour
             overridePixelSize > 0 ? overridePixelSize : currentPixelSize;
         }
 
-        // DITHERING
         if (dithering != null)
         {
             dithering.ditherThreshold.overrideState = true;
             dithering.ditherThreshold.value = overrideThreshold >= 0 ? overrideThreshold : currentThreshold;
         }
 
-        // VIGNETTE
         if (vignette != null)
         {
             vignette.intensity.overrideState = true;
             vignette.intensity.value = overrideVignette >= 0f ? overrideVignette : currentVignette;
         }
 
-        // BLOOM
         if (bloom != null)
         {
             bloom.intensity.overrideState = true;
@@ -154,17 +143,9 @@ public class CabinPostFXController : MonoBehaviour
             bloom.tint.value = currentBloomColor;
         }
 
-        // AUDIO
         if (ambientAudio != null)
         {
             ambientAudio.volume = currentAudioVolume;
-        }
-
-        // COLOR ADJUSTMENTS
-        if (colorAdjustments != null)
-        {
-            colorAdjustments.colorFilter.overrideState = true;
-            colorAdjustments.colorFilter.value = overrideColor ?? Color.white;
         }
     }
 
@@ -179,14 +160,7 @@ public class CabinPostFXController : MonoBehaviour
 
         if (triggerFastPulse)
         {
-            pulseSpeed = 2f;
-            fastPulseElapsed += Time.deltaTime;
-            if (fastPulseElapsed >= fastPulseTime)
-            {
-                triggerFastPulse = false;
-                fastPulseElapsed = 0f;
-                chromatic.intensity.value = 0f;
-            }
+            pulseSpeed = 8f;
         }
 
         chromaticTimer += Time.deltaTime * pulseSpeed;
@@ -203,16 +177,11 @@ public class CabinPostFXController : MonoBehaviour
 
     private IEnumerator RainbowGammaCoroutine()
     {
-        if (colorAdjustments == null) yield break;
-
-        Debug.Log("Rainbow coroutine started");
         isDanceCoroutineActive = true;
 
-        // Save original values
         float originalPixelSize = currentPixelSize;
         int originalThreshold = currentThreshold;
         float originalVignette = currentVignette;
-        Color originalColor = colorAdjustments.colorFilter.value;
 
         float duration = 6f;
         float elapsed = 0f;
@@ -220,16 +189,10 @@ public class CabinPostFXController : MonoBehaviour
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            float t = elapsed / duration;
 
-            // Rainbow hue
-            float hue = Mathf.Repeat(t * 6f, 1f);
-            overrideColor = Color.HSVToRGB(hue, 1f, 1f);
-
-            // Make pixelation visible
             overridePixelSize = 360f;
             overrideThreshold = maxThreshold;
-            overrideVignette = 0.3f;
+            overrideVignette = 0.4f;
 
             ApplyValues();
             yield return null;
@@ -241,7 +204,6 @@ public class CabinPostFXController : MonoBehaviour
         float startPixel = overridePixelSize;
         int startThreshold = overrideThreshold;
         float startVignette = overrideVignette;
-        Color startColor = overrideColor.Value;
 
         while (lerpElapsed < lerpDuration)
         {
@@ -251,7 +213,6 @@ public class CabinPostFXController : MonoBehaviour
             overridePixelSize = Mathf.Lerp(startPixel, originalPixelSize, lerpT);
             overrideThreshold = Mathf.RoundToInt(Mathf.Lerp(startThreshold, originalThreshold, lerpT));
             overrideVignette = Mathf.Lerp(startVignette, originalVignette, lerpT);
-            overrideColor = Color.Lerp(startColor, originalColor, lerpT);
 
             ApplyValues();
             yield return null;
@@ -260,10 +221,7 @@ public class CabinPostFXController : MonoBehaviour
         overridePixelSize = -1f;
         overrideThreshold = -1;
         overrideVignette = -1f;
-        overrideColor = null;
 
         isDanceCoroutineActive = false;
-        Debug.Log("Rainbow coroutine finished");
     }
-
 }

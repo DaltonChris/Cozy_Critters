@@ -521,6 +521,7 @@ GameObject:
   m_Component:
   - component: {fileID: 138157476}
   - component: {fileID: 138157477}
+  - component: {fileID: 138157478}
   m_Layer: 0
   m_Name: Cabin
   m_TagString: Untagged
@@ -563,11 +564,27 @@ MonoBehaviour:
   ambientAudio: {fileID: 1525168405}
   minDistance: 100
   maxDistance: 600
-  minPixelSize: 64
+  minPixelSize: 48
   maxPixelSize: 512
   maxThreshold: 10
   minThreshold: 1
   smoothSpeed: 5
+--- !u!114 &138157478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138157475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5941ffa7fa4e342b28ea15626de488a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundMat: {fileID: 2100000, guid: e808363c7f0eac279b3c36dfe2c93c8d, type: 2}
+  player: {fileID: 139469460}
+  cabin: {fileID: 3338708864991445779}
+  timeSpeed: 1
 --- !u!4 &139469460 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1367303874729777273, guid: 61c6ef46a712d6d0c8bbc81e6547761b, type: 3}
@@ -8587,12 +8604,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 630929278223466636, guid: 61c6ef46a712d6d0c8bbc81e6547761b, type: 3}
       propertyPath: danceSFX.Array.size
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 630929278223466636, guid: 61c6ef46a712d6d0c8bbc81e6547761b, type: 3}
       propertyPath: cabinPostFXController
       value: 
       objectReference: {fileID: 138157477}
+    - target: {fileID: 630929278223466636, guid: 61c6ef46a712d6d0c8bbc81e6547761b, type: 3}
+      propertyPath: cabinShaderController
+      value: 
+      objectReference: {fileID: 138157478}
     - target: {fileID: 630929278223466636, guid: 61c6ef46a712d6d0c8bbc81e6547761b, type: 3}
       propertyPath: danceSFX.Array.data[0]
       value: 

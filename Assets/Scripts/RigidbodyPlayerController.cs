@@ -4,6 +4,8 @@ using UnityEngine;
 public class RigidbodyPlayerController : MonoBehaviour
 {
     public CabinPostFXController cabinPostFXController;
+    public CabinShaderController cabinShaderController;
+
     public float walkSpeed = 5f;
     public float runSpeed = 8f;
     public float jumpForce = 5f;
@@ -125,25 +127,30 @@ public class RigidbodyPlayerController : MonoBehaviour
 
     System.Collections.IEnumerator DanceRoutine()
     {
-        isDancing = true;
+        isDancing = true;  // block movement
 
         anim.SetTrigger("Dance");
-        cabinPostFXController.TriggerRainbowGamma();
-        // Play random dance SFX if available
+
+        // trigger effects independently
+        if(cabinPostFXController != null) cabinPostFXController.TriggerRainbowGamma();
+        if(cabinShaderController != null) cabinShaderController.TriggerRainbowDance();
+
+        // Play SFX
         if (danceSFX != null && danceSFX.Length > 0)
         {
             int index = Random.Range(0, danceSFX.Length);
             SFXManager.Instance.PlaySFX(danceSFX[index]);
         }
 
-        // Make nearby critters dance too
+        // Critters
         TriggerNearbyCrittersDance();
 
-        // wait for dance duration
+        // Wait for dance animation duration only
         yield return new WaitForSeconds(danceDuration);
 
         isDancing = false; // allow movement again
     }
+
 
     void TriggerNearbyCrittersDance()
     {
