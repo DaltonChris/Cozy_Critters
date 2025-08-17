@@ -28,7 +28,7 @@ public class InventoryUI : MonoBehaviour
     public Transform player;                     // player
     public List<FruitPrefab> fruitPrefabs;
     private Dictionary<PlayerInventory.FruitType, GameObject> fruitPrefabMap;
-
+    public EatFruitEffect eatFruitEffect;
     private int selectedIndex = 0;
 
     private void Start()
@@ -81,11 +81,12 @@ public class InventoryUI : MonoBehaviour
         else if (scroll < 0f) PreviousSlot();
 
         // Drop input
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            DropFruit();
-        }
+        if (Input.GetKeyDown(KeyCode.Q)) DropFruit();
+
+        // Eat input
+        if (Input.GetMouseButtonDown(0)) EatFruit(); // Left mouse button
     }
+
 
     private void NextSlot()
     {
@@ -158,4 +159,24 @@ public class InventoryUI : MonoBehaviour
             }
         }
     }
+    private void EatFruit()
+    {
+        if (slots.Count == 0 || playerInventory == null) return;
+
+        var selectedSlot = slots[selectedIndex];
+        int count = playerInventory.GetFruitCount(selectedSlot.type);
+        if (count > 0)
+        {
+            // Remove one from inventory
+            playerInventory.AddFruit(selectedSlot.type, -1);
+
+            // Update the UI
+            UpdateSlot(selectedSlot.type, count - 1);
+
+            if (eatFruitEffect != null)
+            {
+                eatFruitEffect.TriggerEffect(); // shader
+            }
+            }
+        }
 }

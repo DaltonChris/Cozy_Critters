@@ -6,7 +6,7 @@ Shader "Custom/CabinRainbowDistanceShader"
         _CabinPos ("Cabin Position", Vector) = (0,0,0,0)
         _DanceActive ("Dance Active", Float) = 0 // 0 = off, 1 = on
         _TimeSpeed ("Time Speed", Float) = 256
-        _RainbowAlpha ("Rainbow Transparency", Range(0,1)) = 0.99
+        _RainbowAlpha ("Rainbow Transparency", Range(0,1)) = 0.45
     }
 
     SubShader

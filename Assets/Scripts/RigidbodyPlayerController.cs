@@ -157,7 +157,7 @@ public class RigidbodyPlayerController : MonoBehaviour
         Collider[] hits = Physics.OverlapSphere(transform.position, danceRadius);
         foreach (Collider hit in hits)
         {
-            if (hit.CompareTag("Critter")) // Make sure critters are tagged properly
+            if (hit.CompareTag("Critter"))
             {
                 Animator critterAnim = hit.GetComponent<Animator>();
                 if (critterAnim != null)
@@ -172,7 +172,9 @@ public class RigidbodyPlayerController : MonoBehaviour
                 }
             }
         }
+
     }
+
 
     private void OnDrawGizmosSelected()
     {
