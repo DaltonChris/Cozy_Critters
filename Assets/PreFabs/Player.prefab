@@ -388,11 +388,13 @@ MonoBehaviour:
   walkSpeed: 10
   runSpeed: 30
   jumpForce: 20
-  mouseSensitivity: 100
+  mouseSensitivity: 90
   gravityMultiplier: 3
   normalMass: 1
   anim: {fileID: 2002996331468473381}
   danceSFX: []
+  danceRadius: 35
+  danceDuration: 6
 --- !u!114 &3027536660561232358
 MonoBehaviour:
   m_ObjectHideFlags: 0

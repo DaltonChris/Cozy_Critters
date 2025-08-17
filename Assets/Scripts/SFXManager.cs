@@ -8,7 +8,7 @@ public class SFXManager : MonoBehaviour
     private AudioSource audioSource;
 
     [Header("Optional Default Settings")]
-    public float defaultVolume = 1f;
+    float defaultVolume = 0.8f;
     public float defaultPitch = 1f;
 
     private void Awake()
@@ -37,9 +37,8 @@ public class SFXManager : MonoBehaviour
         volume = volume < 0f ? defaultVolume : volume;
         pitch = pitch < 0f ? defaultPitch : pitch;
 
-        audioSource.clip = clip;
-        audioSource.volume = volume;
         audioSource.pitch = pitch;
-        audioSource.Play();
+        audioSource.PlayOneShot(clip, volume);
     }
+
 }

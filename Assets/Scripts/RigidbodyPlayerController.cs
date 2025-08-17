@@ -19,6 +19,8 @@ public class RigidbodyPlayerController : MonoBehaviour
     [Header("Dance Settings")]
     public AudioClip[] danceSFX; // Array of possible dance sounds
     public float danceRadius = 35f; // how far critters will react
+    public float danceDuration = 6f; // dance lasts 6 seconds
+    private bool isDancing = false; // lock input while dancing
 
     void Start()
     {
@@ -33,6 +35,8 @@ public class RigidbodyPlayerController : MonoBehaviour
 
     void Update()
     {
+        if (isDancing) return; // block input while dancing
+
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         rotationY += mouseX;
         transform.rotation = Quaternion.Euler(0f, rotationY, 0f);
@@ -44,25 +48,17 @@ public class RigidbodyPlayerController : MonoBehaviour
             anim.SetTrigger("Jump"); // Trigger jump animation
         }
 
-        // Dance Trigger (only fires when pressed, not held)
-        if (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.RightAlt))
+        // Dance Trigger (press F, only if not already dancing)
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            anim.SetTrigger("Dance");
-
-            // Play random dance SFX if available
-            if (danceSFX != null && danceSFX.Length > 0)
-            {
-                int index = Random.Range(0, danceSFX.Length);
-                SFXManager.Instance.PlaySFX(danceSFX[index]);
-            }
-
-            // Make nearby critters dance too
-            TriggerNearbyCrittersDance();
+            StartCoroutine(DanceRoutine());
         }
     }
 
     void FixedUpdate()
     {
+        if (isDancing) return; // block movement while dancing
+
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
 
@@ -119,6 +115,28 @@ public class RigidbodyPlayerController : MonoBehaviour
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
+    System.Collections.IEnumerator DanceRoutine()
+    {
+        isDancing = true;
+
+        anim.SetTrigger("Dance");
+
+        // Play random dance SFX if available
+        if (danceSFX != null && danceSFX.Length > 0)
+        {
+            int index = Random.Range(0, danceSFX.Length);
+            SFXManager.Instance.PlaySFX(danceSFX[index]);
+        }
+
+        // Make nearby critters dance too
+        TriggerNearbyCrittersDance();
+
+        // wait for dance duration
+        yield return new WaitForSeconds(danceDuration);
+
+        isDancing = false; // allow movement again
+    }
+
     void TriggerNearbyCrittersDance()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, danceRadius);
@@ -126,25 +144,17 @@ public class RigidbodyPlayerController : MonoBehaviour
         {
             if (hit.CompareTag("Critter")) // Make sure critters are tagged properly
             {
-                if(hit != null)
+                Animator critterAnim = hit.GetComponent<Animator>();
+                if (critterAnim != null)
                 {
-                    Animator critterAnim = hit.GetComponent<Animator>();
-                    if(critterAnim != null)
-                    {
-                        critterAnim.enabled = true;
-                        critterAnim.SetTrigger("Dance");
-                        Debug.Log("Trigger set on parent Animator!");
-                    }
-                    else
-                    {
-                        Debug.Log("No Animator found on parent!");
-                    }
+                    critterAnim.enabled = true;
+                    critterAnim.SetTrigger("Dance");
+                    Debug.Log("Trigger set on critter Animator!");
                 }
                 else
                 {
-                    Debug.Log("Hit object has no parent!");
+                    Debug.Log("No Animator found on critter!");
                 }
-
             }
         }
     }
