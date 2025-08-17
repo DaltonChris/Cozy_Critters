@@ -6102,6 +6102,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3489438679904030659, guid: aec7ccc53a816318a92bf1f62e4376e9, type: 3}
+      propertyPath: fruitPrefabs.Array.data[0].prefab
+      value: 
+      objectReference: {fileID: 6092609162872618978, guid: 5789e3f45485ad8d6b6fc67f87185053, type: 3}
+    - target: {fileID: 3489438679904030659, guid: aec7ccc53a816318a92bf1f62e4376e9, type: 3}
       propertyPath: fruitPrefabs.Array.data[1].prefab
       value: 
       objectReference: {fileID: 6092609162872618978, guid: 1ef4f30c68df904debb3f3a150d42f31, type: 3}
