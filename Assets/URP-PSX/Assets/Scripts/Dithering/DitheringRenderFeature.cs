@@ -18,6 +18,8 @@ namespace PSX
             // Just enqueue the pass, DO NOT access cameraColorTarget here
             renderer.EnqueuePass(ditheringPass);
         }
+        // Expose the material publicly for realtime cahnges
+        public Material DitheringMaterial { get; private set; }
     }
 
     public class DitheringPass : ScriptableRenderPass
@@ -36,6 +38,17 @@ namespace PSX
         private Material ditheringMaterial;
         private Dithering dithering;
         private RenderTargetIdentifier currentTarget;
+
+        public DitheringPass(Material mat, RenderPassEvent evt) // Add public method to get mat/event
+        {
+            ditheringMaterial = mat;
+            renderPassEvent = evt;
+        }
+
+        public void SetTarget(RenderTargetIdentifier target) // Get target publiclly
+        {
+            currentTarget = target;
+        }
 
         public DitheringPass(RenderPassEvent evt)
         {

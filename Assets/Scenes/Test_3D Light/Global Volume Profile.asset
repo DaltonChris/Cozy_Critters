@@ -15,7 +15,7 @@ MonoBehaviour:
   active: 1
   color:
     m_OverrideState: 1
-    m_Value: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 1}
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
   center:
     m_OverrideState: 1
     m_Value: {x: 0.5, y: 0.5}
@@ -26,8 +26,8 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 1
   rounded:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &-3453419070483278706
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -195,13 +195,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ea62842ddb6960488930897ba9ce398, type: 3}
   m_Name: Dithering
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   patternIndex:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   ditherThreshold:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 10
   ditherStrength:
     m_OverrideState: 0
     m_Value: 1

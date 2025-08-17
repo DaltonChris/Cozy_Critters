@@ -15,7 +15,7 @@ namespace PSX
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            // Just enqueue the pass, don't call Setup with cameraColorTarget here
+            // Just enqueue the pass
             renderer.EnqueuePass(pixelationPass);
         }
 
