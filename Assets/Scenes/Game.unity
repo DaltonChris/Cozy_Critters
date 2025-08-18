@@ -563,7 +563,7 @@ MonoBehaviour:
   volume: {fileID: 544567686}
   ambientAudio: {fileID: 1525168405}
   minDistance: 100
-  maxDistance: 600
+  maxDistance: 575
   minPixelSize: 48
   maxPixelSize: 512
   maxThreshold: 10
